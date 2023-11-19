@@ -26,9 +26,6 @@ def load_gltf_vertices(filepath):
     return np.array(vertices)
 
 def visualize_hausdorff_distance(set1, set2):
-    # Calculate Hausdorff distance
-    #hausdorff_distance, _, _ = directed_hausdorff(set1, set2)
-
     # Calculate distances from each point in set2 to the nearest point in set1
     distances_to_set1 = np.min(cdist(set2, set1), axis=1)
 
