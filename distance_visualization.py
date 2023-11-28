@@ -39,21 +39,25 @@ def visualize_hausdorff_distance(set1, set2):
     # Use a colormap to map distances to colors
     scatter = ax.scatter(set2[:, 0], set2[:, 1], set2[:, 2], c=scaled_distances, cmap='viridis', marker='s', label='Set 2 - Hausdorff Distance')
 
-    # Add a colorbar for reference
-    cbar = plt.colorbar(scatter)
-    cbar.set_label('Scaled Hausdorff Distance')
-
-    ax.legend()
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
-    ax.set_title('Hausdorff Distance Visualization')
 
+    sampled_points = set1.shape[0]
+    min_d = round(min(distances_to_set1),5)
+    max_d = round(max(distances_to_set1),5)
+    mean = round(np.mean(distances_to_set1),5)
+    RMS = round(np.sqrt(np.mean(np.square(distances_to_set1))),5)
+    fig.text(0.0, 0.7,  
+         f"Sampled points: {sampled_points}\nMin: {min_d}\nMax: {max_d}\nMean: {mean}\nRMS: {RMS}",   
+         fontsize = 15)
+
+    plt.savefig('plots/3DPlot.png')
     plt.show()
 
 # Load GLTF files and extract vertices
-set1 = load_gltf_vertices(pathlib.Path("models/sphere.glb"))
-set2 = load_gltf_vertices(pathlib.Path("models/modified.glb"))
+set1 = load_gltf_vertices(pathlib.Path("models/cube.glb"))
+set2 = load_gltf_vertices(pathlib.Path("models/cube_m.glb"))
 
 # Visualize Hausdorff distance
 visualize_hausdorff_distance(set1, set2)
