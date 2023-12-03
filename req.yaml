@@ -1,6 +1,7 @@
 # req.yaml
 
-- pygltflib==1.4.2
-- numpy==1.21.2
-- scipy==1.7.1
-- matplotlib==3.4.3
+open3d
+pygltflib==1.14.2
+numpy
+scipy
+matplotlib
