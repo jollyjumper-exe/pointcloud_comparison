@@ -1,3 +1,6 @@
-models/*
-pointclouds/*
-plots/*
+scripts/__pycache__
+input/*
+output/*
+
+!input/
+!output/

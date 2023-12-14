@@ -6,10 +6,6 @@ import open3d as o3d
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-def load_point_cloud(file_path):
-    pcd = o3d.io.read_point_cloud(file_path)
-    points = np.asarray(pcd.points)
-    return points
 
 def visualize_hausdorff_distance(set1, set2):
     # Calculate distances from each point in set2 to the nearest point in set1
@@ -47,23 +43,6 @@ def visualize_hausdorff_distance(set1, set2):
     print(f'Mean: {mean}')
     print(f'RMS: {RMS}')
 
-    plt.savefig('plots/3DPlot.png')
     plt.show()
-
-# Load point clouds
-
-cloud1 = load_point_cloud(f"pointclouds/{sys.argv[1]}")
-cloud2 = load_point_cloud(f"pointclouds/{sys.argv[2]}")
-
-x = 5000 # x = -1 to load full set
-if(x != -1):
-    cloud1 = cloud1[:x]
-    cloud2 = cloud2[:x]
-
-cloud1 = cloud1 - np.mean(cloud1, axis=0)
-cloud2 = cloud2 - np.mean(cloud2, axis=0)
-
-
-
-# Visualize Hausdorff distance
-visualize_hausdorff_distance(cloud1, cloud2)
+    
+    return sampled_points, min_d, max_d, mean, RMS
