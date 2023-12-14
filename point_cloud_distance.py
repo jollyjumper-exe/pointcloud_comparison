@@ -1,29 +1,18 @@
+import sys
 import pathlib
-import struct
 import numpy as np
-from pygltflib import GLTF2
 from scipy.spatial.distance import cdist
+import open3d as o3d
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-def load_gltf_vertices(filepath):
-    gltf = GLTF2().load(filepath)
-    mesh = gltf.meshes[gltf.scenes[gltf.scene].nodes[0]]
-    vertices = []
-    
-    for primitive in mesh.primitives:
-        accessor = gltf.accessors[primitive.attributes.POSITION]
-        buffer_view = gltf.bufferViews[accessor.bufferView]
-        buffer = gltf.buffers[buffer_view.buffer]
-        data = gltf.get_data_from_buffer_uri(buffer.uri)
-
-        for i in range(accessor.count):
-            index = buffer_view.byteOffset + accessor.byteOffset + i * 12
-            vertex_data = data[index:index + 12]
-            vertex = struct.unpack("<fff", vertex_data)
-            vertices.append(vertex)
-
-    return np.array(vertices)
+def load_point_cloud(file_path):
+    # Load point cloud from file
+    pcd = o3d.io.read_point_cloud(file_path)
+    # Extract XYZ coordinates as a NumPy array
+    points = np.asarray(pcd.points)
+    print(points.shape)
+    return points
 
 def visualize_hausdorff_distance(set1, set2):
     # Calculate distances from each point in set2 to the nearest point in set1
@@ -34,7 +23,11 @@ def visualize_hausdorff_distance(set1, set2):
     ax = fig.add_subplot(111, projection='3d')
 
     # Scale the distances to be in the range [0, 1] for colormap mapping
-    scaled_distances = (distances_to_set1 - distances_to_set1.min()) / (distances_to_set1.max() - distances_to_set1.min())
+    if(not (distances_to_set1.max() - distances_to_set1.min())==0):
+        scaled_distances = (distances_to_set1 - distances_to_set1.min()) / (distances_to_set1.max() - distances_to_set1.min())
+    else:
+        print("It is the same pointcloud!")
+        scaled_distances = np.zeros(distances_to_set1.shape[0])
 
     # Use a colormap to map distances to colors
     scatter = ax.scatter(set2[:, 0], set2[:, 1], set2[:, 2], c=scaled_distances, cmap='viridis', marker='s', label='Set 2 - Hausdorff Distance')
@@ -55,9 +48,17 @@ def visualize_hausdorff_distance(set1, set2):
     plt.savefig('plots/3DPlot.png')
     plt.show()
 
-# Load GLTF files and extract vertices
-set1 = load_gltf_vertices(pathlib.Path("models/cube.glb"))
-set2 = load_gltf_vertices(pathlib.Path("models/cube_m.glb"))
+
+# Replace these paths with your point cloud files
+file_path1 = "path/to/cloud1.txt"
+file_path2 = "path/to/cloud2.txt"
+
+# Load point clouds
+x = 10000
+print(pathlib.Path(f"pointclouds/{sys.argv[1]}"))
+cloud1 = load_point_cloud(f"pointclouds/{sys.argv[1]}")[:x]
+cloud2 = load_point_cloud(f"pointclouds/{sys.argv[2]}")[:x]
+print(cloud1)
 
 # Visualize Hausdorff distance
-visualize_hausdorff_distance(set1, set2)
+visualize_hausdorff_distance(cloud1, cloud2)
