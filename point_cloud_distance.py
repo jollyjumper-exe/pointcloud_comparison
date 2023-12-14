@@ -7,18 +7,14 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 def load_point_cloud(file_path):
-    # Load point cloud from file
     pcd = o3d.io.read_point_cloud(file_path)
-    # Extract XYZ coordinates as a NumPy array
     points = np.asarray(pcd.points)
-    print(points.shape)
     return points
 
 def visualize_hausdorff_distance(set1, set2):
     # Calculate distances from each point in set2 to the nearest point in set1
     distances_to_set1 = np.min(cdist(set2, set1), axis=1)
 
-    # Visualize the sets and Hausdorff distance as a heatmap
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
@@ -45,20 +41,29 @@ def visualize_hausdorff_distance(set1, set2):
          f"Sampled points: {sampled_points}\nMin: {min_d}\nMax: {max_d}\nMean: {mean}\nRMS: {RMS}",   
          fontsize = 15)
 
+    print(f'Sampled Points: {sampled_points}')
+    print(f'Min: {min_d}')
+    print(f'Max: {max_d}')
+    print(f'Mean: {mean}')
+    print(f'RMS: {RMS}')
+
     plt.savefig('plots/3DPlot.png')
     plt.show()
 
-
-# Replace these paths with your point cloud files
-file_path1 = "path/to/cloud1.txt"
-file_path2 = "path/to/cloud2.txt"
-
 # Load point clouds
-x = 10000
-print(pathlib.Path(f"pointclouds/{sys.argv[1]}"))
-cloud1 = load_point_cloud(f"pointclouds/{sys.argv[1]}")[:x]
-cloud2 = load_point_cloud(f"pointclouds/{sys.argv[2]}")[:x]
-print(cloud1)
+
+cloud1 = load_point_cloud(f"pointclouds/{sys.argv[1]}")
+cloud2 = load_point_cloud(f"pointclouds/{sys.argv[2]}")
+
+x = 5000 # x = -1 to load full set
+if(x != -1):
+    cloud1 = cloud1[:x]
+    cloud2 = cloud2[:x]
+
+cloud1 = cloud1 - np.mean(cloud1, axis=0)
+cloud2 = cloud2 - np.mean(cloud2, axis=0)
+
+
 
 # Visualize Hausdorff distance
 visualize_hausdorff_distance(cloud1, cloud2)
