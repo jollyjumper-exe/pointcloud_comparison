@@ -1,9 +1,11 @@
 # masterprojekt
 
+## Evaluation
+This branch is dedicated to an automated evaluation. The following readme contains the instructions.
 
+## Prerequisites
 
-## Distance Visualization
-This branch is dedicated to experimenting with the distance visualization, which is needed for the evaluation framework. To run distance_visualization.py, you need to install the requirements via:
+To install the necessary requirements, use the .yaml file.
 
 ```pip install -r req.yaml```
 
@@ -11,27 +13,33 @@ Make sure you have Python 3.6+ installed.
 
 You can find all the research associated with this [here](https://gitlab.bht-berlin.de/s87298/masterprojekt/-/wikis/Research/Evaluation-Framework).
 
-### 1. Crop your Pointcloud
+### 1. Load your files
+Place your point clouds, that you want to evaluate into the input folder. For this, you need to create a subfolder subfolder, inside the input folder, which contains the scene name. That subfolder should also contain a subfolder itself, called reference in which you should place the reference file for that scene. E.g., for a scene, named test, the structure should look like this:
 
-```python .\crop_ply.py <pointcloud.ply> <radius> <use neighbor filtering> ```
 
-- pointcloud.ply: Name of the file, inside the pointclouds/ folder
-- radius: radius to remove points outside of it
-- use neighbor filtering: boolean, if you want to apply neighbor filtering (cautiion: applying could take a while)
+``` 
+├── input
+│   ├── test
+│   │   ├── reference
+|   |   | ├──reference.ply
+|   ├── *.ply
+```
 
-### 2. Convert your pointcloud to a mesh
+### 2. Evaluate point clouds and create metrices 
 
-```python .\ply_to_mesh.py <pointcloud.ply> <object.glb>```
+After setting up the input folder, you can use the app.py to evaluate the point clouds and create the metrices.
 
-- pointcloud.ply: Name of the file, inside the pointclouds/ folder
-- object.glb: Name of stored file, inside the models/ folder
+```python .\app.py <scene name>``
+
+- scene name: The scene name needs to be identical to the scene name of the folder.
 
 ### 3. Show Distance between meshes
+Finally, you can show the distances of a specific model.
 
-```python .\distance_visualization.py <source> <compare>```
+```python .\show_plot.py <scene name> <model name>```
 
-- source: name of the source file
-- compare: name of the compare file
+- scene name: The scene name needs to be identical to the scene name of the folder.
+- model name: Name of the specific model you want to display. Look up output/<scene name>/metric.csv for the model names.
 
 ## About 
 This Repo contains any code, files and information needed to understand and reconstruct this project. 
