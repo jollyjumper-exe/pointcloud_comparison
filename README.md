@@ -29,7 +29,7 @@ Place your point clouds, that you want to evaluate into the input folder. For th
 
 After setting up the input folder, you can use the app.py to evaluate the point clouds and create the metrices.
 
-```python .\app.py <scene name>``
+```python .\app.py <scene name>```
 
 - scene name: The scene name needs to be identical to the scene name of the folder.
 
@@ -39,7 +39,7 @@ Finally, you can show the distances of a specific model.
 ```python .\show_plot.py <scene name> <model name>```
 
 - scene name: The scene name needs to be identical to the scene name of the folder.
-- model name: Name of the specific model you want to display. Look up output/<scene name>/metric.csv for the model names.
+- model name: Name of the specific model you want to display. Look up ```output/<scene name>/metric.csv``` for the model names.
 
 ## About 
 This Repo contains any code, files and information needed to understand and reconstruct this project. 
