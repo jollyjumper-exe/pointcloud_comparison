@@ -1,18 +1,12 @@
-import sys
-import pathlib
 import numpy as np
 from scipy.spatial.distance import cdist
 import open3d as o3d
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 
-def visualize_hausdorff_distance(set1, set2):
+def hausdorff_distance(set1, set2):
     # Calculate distances from each point in set2 to the nearest point in set1
     distances_to_set1 = np.min(cdist(set2, set1), axis=1)
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
 
     # Scale the distances to be in the range [0, 1] for colormap mapping
     if(not (distances_to_set1.max() - distances_to_set1.min())==0):
@@ -20,29 +14,35 @@ def visualize_hausdorff_distance(set1, set2):
     else:
         print("It is the same pointcloud!")
         scaled_distances = np.zeros(distances_to_set1.shape[0])
+    
+    return set2, distances_to_set1, scaled_distances
 
-    # Use a colormap to map distances to colors
-    scatter = ax.scatter(set2[:, 0], set2[:, 1], set2[:, 2], c=scaled_distances, cmap='viridis', marker='s', label='Set 2 - Hausdorff Distance')
+def hausdorff_distance_metric(distances):
+    sampled_points = distances.shape[0]
+    min_d = round(min(distances),5)
+    max_d = round(max(distances),5)
+    mean = round(np.mean(distances),5)
+    RMS = round(np.sqrt(np.mean(np.square(distances))),5)
+    
+    return sampled_points, min_d, max_d, mean, RMS
 
+def visualize_hausdorff_distance(points, scaled_distances, data=[]):
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
 
-    sampled_points = set1.shape[0]
-    min_d = round(min(distances_to_set1),5)
-    max_d = round(max(distances_to_set1),5)
-    mean = round(np.mean(distances_to_set1),5)
-    RMS = round(np.sqrt(np.mean(np.square(distances_to_set1))),5)
+    data_string = ""
+    for entry in data:
+        data_string += f'{entry}: {data[entry]}\n'
+
     fig.text(0.0, 0.7,  
-         f"Sampled points: {sampled_points}\nMin: {min_d}\nMax: {max_d}\nMean: {mean}\nRMS: {RMS}",   
-         fontsize = 15)
-
-    print(f'Sampled Points: {sampled_points}')
-    print(f'Min: {min_d}')
-    print(f'Max: {max_d}')
-    print(f'Mean: {mean}')
-    print(f'RMS: {RMS}')
-
-    plt.show()
+        data_string,   
+        fontsize = 15)
     
-    return sampled_points, min_d, max_d, mean, RMS
+    ax.scatter(points[:, 0], points[:, 1], points[:, 2], c=scaled_distances, cmap='viridis', marker='s', label='Set 2 - Hausdorff Distance')
+    
+    plt.show()
