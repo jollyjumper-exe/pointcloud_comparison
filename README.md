@@ -9,7 +9,7 @@ To install the necessary requirements, use the .yaml file.
 
 ```pip install -r req.yaml```
 
-Make sure you have Python 3.6+ installed.
+Ensure you have Python installed in a version >= 3.6 and < 3.10.
 
 You can find all the research associated with this [here](https://gitlab.bht-berlin.de/s87298/masterprojekt/-/wikis/Research/Evaluation-Framework).
 
