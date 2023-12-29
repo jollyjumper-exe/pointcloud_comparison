@@ -17,7 +17,7 @@ filtered_folder = f'input/{scene_name}/pointclouds/filtered'
 output_folder = f'output/{scene_name}/'
 output_folder_plots = f'output/{scene_name}/plots'
 
-limit = 5000 #this is for testing. Might remove it or turn it into an cmd argument
+limit = 10000 #this is for testing. Might remove it or turn it into an cmd argument
 
 # create necessary folders and files
 
@@ -42,14 +42,18 @@ if(len(glob.glob(f'{reference_folder}/*')) > 1):
     print("Make sure that only one file is in the reference directory")
 
 reference = pc.load_point_cloud(reference_file)
-reference = pc.limit_point_cloud(reference,limit)
+if(limit != 0):
+    reference = pc.limit_point_cloud(reference,limit)
 
 # Get input files
 input_files = glob.glob(f'{input_folder}/*.ply')
 
 #create filtered pointclouds
 for file in input_files:
-    filtered_pcd = crop.crop_and_filter(file)
+    pcd = crop.load_point_cloud(file)
+    pcd = crop.center_point_cloud(pcd)
+    filtered_pcd = crop.radial_crop(pcd, radius=1)
+    filtered_pcd = pcd
     filename = file.split('\\')[-1].split('.')[0]
     o3d.io.write_point_cloud(f'{filtered_folder}/{filename}_cropped.ply', filtered_pcd)
     #o3d.visualization.draw_geometries([filtered_pcd])
@@ -60,7 +64,8 @@ input_files = glob.glob(f'{filtered_folder}/*.ply')
 for file in input_files:
     # Load & limit point cloud
     cloud = pc.load_point_cloud(file)
-    cloud = pc.limit_point_cloud(cloud, limit)
+    if(limit != 0):
+        cloud = pc.limit_point_cloud(cloud, limit)
 
     points, distances, scaled_distances = distance.hausdorff_distance(reference, cloud)
     sampled_points, min_d, max_d, mean, rms = distance.hausdorff_distance_metric(distances)
