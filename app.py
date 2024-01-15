@@ -3,6 +3,7 @@ import os
 import open3d as o3d
 import glob
 import json
+import argparse
 
 module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'scripts'))
 sys.path.append(module_path)
@@ -10,7 +11,18 @@ import crop_and_filter as crop
 import point_cloud_distance as distance
 import point_clouds as pc
 
-scene_name = sys.argv[1]
+#Command-line Arguments
+parser = argparse.ArgumentParser(description='A script with command-line arguments.')
+parser.add_argument('-scale', type=float, help='Specify the scale value.')
+parser.add_argument('-scene', type=str, help='Specify the scene.')
+parser.add_argument('-error', type=float, help='Specify the error value.')
+
+args = parser.parse_args()
+scale_value = args.scale
+error_value = args.error
+scene_name = args.scene
+
+#scene_name = sys.argv[1]
 input_folder = f'input/{scene_name}/pointclouds/'
 reference_folder = f'input/{scene_name}/reference'
 filtered_folder = f'input/{scene_name}/pointclouds/filtered'
@@ -53,7 +65,7 @@ for file in input_files:
     pcd = crop.load_point_cloud(file)
     pcd = crop.center_point_cloud(pcd)
     pcd = crop.sort_point_cloud(pcd)
-    pcd = crop.radial_crop(pcd, radius=.4)
+    pcd = crop.radial_crop(pcd, radius=scale_value)
 
     filename = file.split('\\')[-1].split('.')[0]
     
@@ -73,7 +85,7 @@ for file in input_files:
     if(limit != 0):
         cloud = pc.limit_point_cloud(cloud, limit)
 
-    points, distances, scaled_distances = distance.hausdorff_distance(reference, cloud)
+    points, distances, scaled_distances = distance.hausdorff_distance(reference, cloud, scale=error_value)
     sampled_points, min_d, max_d, mean, rms = distance.hausdorff_distance_metric(distances)
 
 
