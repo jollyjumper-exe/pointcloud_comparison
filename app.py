@@ -17,7 +17,7 @@ filtered_folder = f'input/{scene_name}/pointclouds/filtered'
 output_folder = f'output/{scene_name}/'
 output_folder_plots = f'output/{scene_name}/plots'
 
-limit = 10000 #this is for testing. Might remove it or turn it into an cmd argument
+limit = 30000 #this is for testing. Might remove it or turn it into an cmd argument
 
 # create necessary folders and files
 
@@ -52,10 +52,16 @@ input_files = glob.glob(f'{input_folder}/*.ply')
 for file in input_files:
     pcd = crop.load_point_cloud(file)
     pcd = crop.center_point_cloud(pcd)
-    filtered_pcd = crop.radial_crop(pcd, radius=1)
-    filtered_pcd = pcd
+    pcd = crop.sort_point_cloud(pcd)
+    pcd = crop.radial_crop(pcd, radius=.4)
+
     filename = file.split('\\')[-1].split('.')[0]
-    o3d.io.write_point_cloud(f'{filtered_folder}/{filename}_cropped.ply', filtered_pcd)
+    
+    if (filename.find("3dgs") != -1): 
+        print(f"Rotating {filename}")
+        #pcd = crop.rotate_point_cloud(pcd)
+
+    o3d.io.write_point_cloud(f'{filtered_folder}/{filename}_cropped.ply', pcd)
     #o3d.visualization.draw_geometries([filtered_pcd])
 
 # Get all filtered point clouds
@@ -71,7 +77,9 @@ for file in input_files:
     sampled_points, min_d, max_d, mean, rms = distance.hausdorff_distance_metric(distances)
 
 
-    modelname = file.split('\\')[-1].split('.')[0].split('_')[0]
+    modelname = file.split('\\')[-1].split('.')[0].split('_')[:-1]
+    modelname = "_".join(modelname)
+    
     with open(f'{output_folder}/metric.csv', 'a') as ofile:
         ofile.write('\n' + f'{modelname};{sampled_points};{max_d};{min_d};{mean};{rms}')
 

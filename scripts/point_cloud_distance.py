@@ -45,4 +45,6 @@ def visualize_hausdorff_distance(points, scaled_distances, data=[]):
     
     ax.scatter(points[:, 0], points[:, 1], points[:, 2], c=scaled_distances, cmap='viridis', marker='s', label='Set 2 - Hausdorff Distance')
     
+    ax.set_box_aspect([np.ptp(axis) for axis in [points[:, 0], points[:, 1], points[:, 2]]])
+    
     plt.show()
