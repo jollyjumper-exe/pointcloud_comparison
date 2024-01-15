@@ -4,13 +4,14 @@ import open3d as o3d
 import matplotlib.pyplot as plt
 
 
-def hausdorff_distance(set1, set2):
+def hausdorff_distance(set1, set2, scale = .5):
     # Calculate distances from each point in set2 to the nearest point in set1
     distances_to_set1 = np.min(cdist(set2, set1), axis=1)
 
+    scale = .05
     # Scale the distances to be in the range [0, 1] for colormap mapping
     if(not (distances_to_set1.max() - distances_to_set1.min())==0):
-        scaled_distances = (distances_to_set1 - distances_to_set1.min()) / (distances_to_set1.max() - distances_to_set1.min())
+        scaled_distances = np.clip(distances_to_set1 / scale, None, 1)
     else:
         print("It is the same pointcloud!")
         scaled_distances = np.zeros(distances_to_set1.shape[0])
