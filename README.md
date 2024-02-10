@@ -35,7 +35,7 @@ You can find further information in the documentation.
 
 ## About 
 This Repo contains any code, files and information needed to understand and reconstruct this project. 
-You can find our researches in the Wiki under ['Research'](https://gitlab.bht-berlin.de/s87298/masterprojekt/-/wikis/Research).
+You can find our researches in the Wiki under ['Research'](https://gitlab.bht-berlin.de/s87298/masterprojekt/-/wikis/home/Research).
 
 ## Contact
 For questions, feedback, or collaboration opportunities, please contact David Dann at [s86787@bht-berlin.de] or Mortimer van Egmond at [s87298@bht-berlin.de].
