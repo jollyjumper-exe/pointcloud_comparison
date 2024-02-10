@@ -29,9 +29,11 @@ Place your point clouds, that you want to evaluate into the input folder. For th
 
 After setting up the input folder, you can use the app.py to evaluate the point clouds and create the metrices.
 
-```python .\app.py <scene name>```
+```python app.py -scene <scene name> -scale <scale> -error <error>```
 
 - scene name: The scene name needs to be identical to the scene name of the folder.
+- scale: scale of the object in m. This is used for radian cropping around the object.
+- error: highest error in m that can be displayed. If you want to investigate small errors, set it to a low value and for big error vice versa.
 
 ### 3. Show Distance between meshes
 Finally, you can show the distances of a specific model.
