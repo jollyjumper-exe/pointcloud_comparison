@@ -8,8 +8,7 @@ def load_point_cloud(filename):
 def center_point_cloud(pointcloud):
     
     points_np = np.asarray(pointcloud.points)
-    print(points_np.shape)
-    mean_point = np.median(points_np, axis=0)
+    mean_point = np.average(points_np, axis=0)
     centered_points = points_np - mean_point
 
     pointcloud.points = o3d.utility.Vector3dVector(centered_points)
@@ -42,28 +41,12 @@ def sort_point_cloud(pointcloud):
     distances_to_center = np.linalg.norm(points_np, axis=1)
     sorted_indices = np.argsort(distances_to_center)
     pointcloud = pointcloud.select_by_index(sorted_indices)
-    #pointcloud.points = o3d.utility.Vector3dVector(sorted_points)
-    return pointcloud
-
-
-def rotate_point_cloud(pointcloud, angle=00):
-    points_np = np.asarray(pointcloud.points)
-    theta = angle#theta = np.radians(angle)
-    print(f"{angle} -> {np.radians(angle)}")
-    # Define the rotation matrix around the x-axis
-    rotation_matrix = np.array([
-    [np.cos(theta), 0, np.sin(theta)],
-    [0, 1, 0],
-    [-np.sin(theta), 0, np.cos(theta)]
-    ])
-    # Apply the rotation matrix to the entire point cloud
-    center = np.median(pointcloud.points, axis=0)
-    pointcloud = pointcloud.rotate(rotation_matrix, center=center)
-    #pointcloud.points = o3d.utility.Vector3dVector(rotated_points)
 
     return pointcloud
+
 
 def filter_point_cloud(pointcloud, radius, neighbors):
     print("Removing outliers... (This might take a while)")
     filtered_pcd, _ = pointcloud.remove_radius_outlier(nb_points=neighbors, radius=radius)
+    
     return filtered_pcd

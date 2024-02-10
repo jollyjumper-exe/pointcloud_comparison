@@ -16,11 +16,15 @@ parser = argparse.ArgumentParser(description='A script with command-line argumen
 parser.add_argument('-scale', type=float, help='Specify the scale value.')
 parser.add_argument('-scene', type=str, help='Specify the scene.')
 parser.add_argument('-error', type=float, help='Specify the error value.')
+parser.add_argument('-limit', type=int, default=0, help='Limit the point cloud size.')
+parser.add_argument('-filter', type=bool, default=False, help='Filter a noisy point cloud and remove artifacts.')
 
 args = parser.parse_args()
 scale_value = args.scale
 error_value = args.error
 scene_name = args.scene
+limit = args.limit
+should_filter = args.filter
 
 #scene_name = sys.argv[1]
 input_folder = f'input/{scene_name}/pointclouds/'
@@ -29,10 +33,7 @@ filtered_folder = f'input/{scene_name}/pointclouds/filtered'
 output_folder = f'output/{scene_name}/'
 output_folder_plots = f'output/{scene_name}/plots'
 
-limit = 50000 #this is for testing. Might remove it or turn it into an cmd argument
-
 # create necessary folders and files
-
 if not os.path.exists(filtered_folder):
     os.makedirs(filtered_folder)
 
@@ -63,15 +64,18 @@ input_files = glob.glob(f'{input_folder}/*.ply')
 #create filtered pointclouds
 for file in input_files:
     pcd = crop.load_point_cloud(file)
-    #pcd = crop.center_point_cloud(pcd)
+    pcd = crop.center_point_cloud(pcd)
     pcd = crop.sort_point_cloud(pcd)
     pcd = crop.radial_crop(pcd, radius=scale_value)
+    if should_filter : pcd = crop.filter_point_cloud(pcd, scale_value/100, 10)
 
     filename = file.split('\\')[-1].split('.')[0]
     
     if (filename.find("3dgs") != -1): 
         print(f"Rotating {filename}")
         #pcd = crop.rotate_point_cloud(pcd)
+
+    print(f'Preprocessed {filename} successfully.')
 
     o3d.io.write_point_cloud(f'{filtered_folder}/{filename}_cropped.ply', pcd)
     #o3d.visualization.draw_geometries([filtered_pcd])
@@ -80,6 +84,11 @@ for file in input_files:
 input_files = glob.glob(f'{filtered_folder}/*.ply')
 
 for file in input_files:
+    modelname = file.split('\\')[-1].split('.')[0].split('_')[:-1]
+    modelname = "_".join(modelname)
+    
+    print(f'Calculating Hausdorff-Distance for {modelname}...')
+    
     # Load & limit point cloud
     cloud = pc.load_point_cloud(file)
     if(limit != 0):
@@ -89,8 +98,7 @@ for file in input_files:
     sampled_points, min_d, max_d, mean, rms = distance.hausdorff_distance_metric(distances)
 
 
-    modelname = file.split('\\')[-1].split('.')[0].split('_')[:-1]
-    modelname = "_".join(modelname)
+
     
     with open(f'{output_folder}/metric.csv', 'a') as ofile:
         ofile.write('\n' + f'{modelname};{sampled_points};{max_d};{min_d};{mean};{rms}')
