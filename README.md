@@ -11,7 +11,10 @@ This project aims to develop evaluation matrices for comparing point clouds gene
 ![Bunny](https://i.imgur.com/2NXEUTK.png)
 
 ## Getting Started
-1. Clone the repository: git clonehttps://gitlab.bht-berlin.de/s87298/masterprojekt/
+1. Clone the repository: 
+
+```git clone https://gitlab.bht-berlin.de/s87298/masterprojekt/```
+
 2. Install dependencies:
 
 ```pip install -r req.yaml```
