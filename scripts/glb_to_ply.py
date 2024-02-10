@@ -10,10 +10,10 @@ def glb_to_pointcloud(glb_path, n):
 glb_file_path = sys.argv[1]
 
 if(len(sys.argv) <= 2):
-    n = 10000
+    n = 20000
 else:
     n = int(sys.argv[2])
 pointcloud = glb_to_pointcloud(glb_file_path, n)
 
 o3d.visualization.draw_geometries([pointcloud])
-o3d.io.write_point_cloud("output.ply", pointcloud)
+o3d.io.write_point_cloud(sys.argv[1].split(".")[0]+".ply", pointcloud)

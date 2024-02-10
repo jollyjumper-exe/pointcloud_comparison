@@ -29,7 +29,7 @@ filtered_folder = f'input/{scene_name}/pointclouds/filtered'
 output_folder = f'output/{scene_name}/'
 output_folder_plots = f'output/{scene_name}/plots'
 
-limit = 30000 #this is for testing. Might remove it or turn it into an cmd argument
+limit = 50000 #this is for testing. Might remove it or turn it into an cmd argument
 
 # create necessary folders and files
 
@@ -63,7 +63,7 @@ input_files = glob.glob(f'{input_folder}/*.ply')
 #create filtered pointclouds
 for file in input_files:
     pcd = crop.load_point_cloud(file)
-    pcd = crop.center_point_cloud(pcd)
+    #pcd = crop.center_point_cloud(pcd)
     pcd = crop.sort_point_cloud(pcd)
     pcd = crop.radial_crop(pcd, radius=scale_value)
 
