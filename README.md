@@ -25,13 +25,11 @@ Ensure you have Python installed in a version >= 3.6 and < 3.10.
 
 ```python app.py -scene <scene name> -scale <scale> -error <error>```
 
-You can find further information in the documentation.
-
 4. Run the visualization script:
 
 ```python .\show_plot.py <scene name> <model name>```
 
-You can find further information in the documentation.
+You can find further information on this in the [documentation](https://gitlab.bht-berlin.de/s87298/masterprojekt/-/wikis/home/Manual).
 
 ## About 
 This Repo contains any code, files and information needed to understand and reconstruct this project. 
